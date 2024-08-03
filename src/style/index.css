@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #222;
+}
+
+canvas {
+  border: 1px solid #fff;
+}
+
+#ui {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+button {
+  margin-bottom: 10px;
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
