@@ -1,17 +1,12 @@
-class Wall {
-  constructor(game, x, y) {
-    this.game = game;
-    this.x = x;
-    this.y = y;
-    this.size = 50;
-    this.health = 100; // 장벽 체력
-  }
+import GameObject from "./GameObject.js";
 
-  update() {
-    // 장벽 업데이트 로직
+class Wall extends GameObject {
+  constructor(game, x, y) {
+    super(game, x, y, 50, 100); // size와 health 설정
   }
 
   draw(ctx) {
+    const healthPercentage = this.health / this.maxHealth;
     ctx.fillStyle = "gray";
     ctx.fillRect(
       this.x - this.size / 2,
@@ -19,11 +14,20 @@ class Wall {
       this.size,
       this.size
     );
+    ctx.fillStyle = "red";
+    ctx.fillRect(
+      this.x - this.size / 2,
+      this.y - this.size / 2,
+      this.size * healthPercentage,
+      this.size
+    );
+  }
 
-    // 장벽 체력 표시
-    ctx.fillStyle = "white";
-    ctx.font = "12px Arial";
-    ctx.fillText(this.health, this.x - 10, this.y + 4);
+  destroy() {
+    const index = this.game.walls.indexOf(this);
+    if (index !== -1) {
+      this.game.walls.splice(index, 1);
+    }
   }
 }
 

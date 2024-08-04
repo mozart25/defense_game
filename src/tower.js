@@ -1,11 +1,9 @@
+import GameObject from "./GameObject.js";
 import Cannon from "./cannon.js";
 
-class Tower {
+class Tower extends GameObject {
   constructor(game, x, y) {
-    this.game = game;
-    this.x = x;
-    this.y = y;
-    this.size = 30;
+    super(game, x, y, 30, 100); // size와 health 설정
     this.range = 150;
     this.attackSpeed = 1000; // 공격 속도 (ms)
     this.lastAttackTime = 0;
@@ -15,7 +13,6 @@ class Tower {
     const now = Date.now();
     if (now - this.lastAttackTime > this.attackSpeed) {
       const target = this.findTarget();
-
       if (target) {
         this.attack(target);
         this.lastAttackTime = now;
@@ -50,6 +47,38 @@ class Tower {
       this.size,
       this.size
     );
+  }
+
+  takeDamage(damage) {
+    super.takeDamage(damage);
+    if (this.health > 0) {
+      this.drawHealth(ctx);
+    }
+  }
+
+  drawHealth(ctx) {
+    const healthPercentage = this.health / this.maxHealth;
+    ctx.fillStyle = "gray";
+    ctx.fillRect(
+      this.x - this.size / 2,
+      this.y - this.size / 2,
+      this.size,
+      this.size
+    );
+    ctx.fillStyle = "green";
+    ctx.fillRect(
+      this.x - this.size / 2,
+      this.y - this.size / 2,
+      this.size * healthPercentage,
+      this.size
+    );
+  }
+
+  destroy() {
+    const index = this.game.towers.indexOf(this);
+    if (index !== -1) {
+      this.game.towers.splice(index, 1);
+    }
   }
 }
 

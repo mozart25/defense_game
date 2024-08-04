@@ -1,4 +1,5 @@
 import Tower from "./tower.js";
+import Wall from "./wall.js";
 
 class Player {
   constructor(game, x, y) {
@@ -10,6 +11,7 @@ class Player {
     this.targetX = x;
     this.targetY = y;
     this.moving = false;
+    this.buildType = null;
     this.controls();
   }
 
@@ -39,6 +41,12 @@ class Player {
     this.onReachTarget = callback;
   }
 
+  build(type) {
+    this.buildType = type;
+    this.game.buildMode = true;
+    this.game.eventSystem.log(`${type} build mode activated`);
+  }
+
   update() {
     if (this.moving) {
       const dx = this.targetX - this.x;
@@ -48,7 +56,9 @@ class Player {
         this.x = this.targetX;
         this.y = this.targetY;
         this.moving = false;
-        if (this.onReachTarget) this.onReachTarget();
+        if (this.onReachTarget) {
+          this.onReachTarget();
+        }
       } else {
         this.x += (dx / dist) * this.speed;
         this.y += (dy / dist) * this.speed;

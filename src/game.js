@@ -3,7 +3,8 @@ import Enemy from "./enemy.js";
 import Tower from "./tower.js";
 import Wall from "./wall.js";
 import Cannon from "./cannon.js";
-import Explosion from "./explosion.js"; // Explosion 클래스 임포트
+import Explosion from "./explosion.js";
+import EventSystem from "./eventSystem.js";
 
 class Game {
   constructor(ctx, width, height) {
@@ -16,6 +17,7 @@ class Game {
     this.walls = [];
     this.cannons = [];
     this.explosions = [];
+    this.eventSystem = new EventSystem();
     this.gridSize = 50; // 그리드 크기 설정
     this.resources = 100; // 시작 자원
     this.baseHealth = 100; // 기지 체력
@@ -48,8 +50,14 @@ class Game {
   }
 
   addEventListeners() {
-    document.getElementById("buildButton").addEventListener("click", () => {
-      this.buildMode = !this.buildMode;
+    document
+      .getElementById("buildTowerButton")
+      .addEventListener("click", () => {
+        this.player.build("Tower");
+      });
+
+    document.getElementById("buildWallButton").addEventListener("click", () => {
+      this.player.build("Wall");
     });
 
     this.ctx.canvas.addEventListener("mousemove", (e) => {
@@ -69,7 +77,13 @@ class Game {
         this.player.moveTo(this.previewX, this.previewY, () => {
           if (this.resources >= 50) {
             this.resources -= 50;
-            this.towers.push(new Tower(this, this.previewX, this.previewY));
+            if (this.player.buildType === "Tower") {
+              this.towers.push(new Tower(this, this.previewX, this.previewY));
+              this.eventSystem.log("Tower built");
+            } else if (this.player.buildType === "Wall") {
+              this.walls.push(new Wall(this, this.previewX, this.previewY));
+              this.eventSystem.log("Wall built");
+            }
             this.buildMode = false;
           }
         });
@@ -87,6 +101,7 @@ class Game {
       const x = Math.random() * this.width;
       const y = Math.random() * this.height;
       this.enemies.push(new Enemy(this, x, y));
+      this.eventSystem.log("Enemy spawned");
     }, 1000); // 1초마다 적 스폰
   }
 

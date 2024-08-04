@@ -42,16 +42,20 @@ class Cannon {
 
     // 폭발 범위 내의 적군에게 피해를 줌
     const explosionRadius = 30;
+    let enemiesHit = 0;
     this.game.enemies.forEach((enemy) => {
       const dist = Math.hypot(enemy.x - this.x, enemy.y - this.y);
       if (dist < explosionRadius) {
         enemy.health -= 20; // 대포 폭발 피해
+        enemiesHit++;
         if (enemy.health <= 0) {
           const index = this.game.enemies.indexOf(enemy);
           this.game.enemies.splice(index, 1);
         }
       }
     });
+
+    this.game.eventSystem.log(`Cannon exploded, hit ${enemiesHit} enemies`);
 
     // 대포 제거
     const index = this.game.cannons.indexOf(this);
